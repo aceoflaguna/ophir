@@ -1,0 +1,47 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ophir
+      POSTGRES_PASSWORD: ophir
+      POSTGRES_DB: ophir
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ophir"]
+      interval: 5s
+      retries: 10
+  valkey:
+    image: valkey/valkey:8-alpine
+    # BullMQ requires noeviction
+    command: ["valkey-server", "--maxmemory-policy", "noeviction", "--appendonly", "yes"]
+    ports: ["6379:6379"]
+    volumes: [valkeydata:/data]
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 5s
+      retries: 10
+  api:
+    build: .
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://ophir:ophir@postgres:5432/ophir
+      VALKEY_URL: redis://valkey:6379
+    depends_on:
+      postgres: { condition: service_healthy }
+      valkey: { condition: service_healthy }
+    ports: ["3000:3000"]
+    command: sh -c "bun run migrate && bun run start"
+  worker:
+    build: .
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://ophir:ophir@postgres:5432/ophir
+      VALKEY_URL: redis://valkey:6379
+    depends_on:
+      postgres: { condition: service_healthy }
+      valkey: { condition: service_healthy }
+    command: bun run worker
+volumes:
+  pgdata:
+  valkeydata:
