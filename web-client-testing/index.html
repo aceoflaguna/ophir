@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Ride Simulator</title>
+  <meta name="theme-color" content="#111827">
+  <meta name="description" content="Test client for the Uber clone API: simulate riders, drivers and locations on a map.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <script src="js/theme.js"></script>
+  <link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css">
+  <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div class="d-flex align-items-center gap-2">
+        <span class="brand">Ride Sim</span>
+        <span id="conn" class="conn-dot" title="API status"></span>
+        <small id="conn-text" class="text-secondary d-none d-sm-inline"></small>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <span id="clock-coords" class="coords-badge" title="Last map coordinates"></span>
+        <button id="btn-install" class="btn btn-sm btn-outline-light d-none">Install</button>
+      </div>
+    </header>
+
+    <div id="map" aria-label="Map"></div>
+
+    <div class="map-controls">
+      <div class="btn-group btn-group-sm shadow" role="group" aria-label="Map tap action" id="tapmode">
+        <input type="radio" class="btn-check" name="tap" id="tap-pickup" value="pickup" checked>
+        <label class="btn btn-light" for="tap-pickup">📍 Pickup</label>
+        <input type="radio" class="btn-check" name="tap" id="tap-dropoff" value="dropoff">
+        <label class="btn btn-light" for="tap-dropoff">🏁 Drop-off</label>
+        <input type="radio" class="btn-check" name="tap" id="tap-driver" value="driver">
+        <label class="btn btn-light" for="tap-driver">🚗 Driver</label>
+      </div>
+      <div class="d-flex flex-column gap-2 mt-2 align-items-end">
+        <button id="btn-gps" class="btn btn-light btn-sm shadow" title="Use my real GPS for the pickup">🎯</button>
+        <button id="btn-layer" class="btn btn-light btn-sm shadow" title="Switch map: OpenStreetMap / offline grid">🗺️</button>
+        <button id="btn-fit" class="btn btn-light btn-sm shadow" title="Fit everything">⤢</button>
+      </div>
+    </div>
+
+    <section id="sheet" class="sheet" data-state="half" aria-live="polite">
+      <button id="sheet-handle" class="sheet-handle" aria-label="Resize panel"><span></span></button>
+      <div id="panel" class="sheet-body"></div>
+    </section>
+
+    <nav class="bottom-nav" id="nav">
+      <button data-tab="rider"><span>🧍</span><small>Rider</small></button>
+      <button data-tab="driver"><span>🚗</span><small>Driver</small></button>
+      <button data-tab="scenarios"><span>🎬</span><small>Scenarios</small></button>
+      <button data-tab="log"><span>📜</span><small>Log</small></button>
+      <button data-tab="settings"><span>⚙️</span><small>Setup</small></button>
+    </nav>
+
+    <div id="toasts" class="toast-container position-fixed top-0 start-50 translate-middle-x p-2"></div>
+  </div>
+
+  <script src="vendor/leaflet/leaflet.js"></script>
+  <script src="vendor/bootstrap/bootstrap.bundle.min.js"></script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

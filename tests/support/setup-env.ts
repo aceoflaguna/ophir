@@ -4,7 +4,7 @@
  */
 import { randomBytes, scrypt, timingSafeEqual } from "node:crypto";
 
-const base = process.env.DATABASE_URL ?? "postgres://ophir:ophir@localhost:5432/ophir";
+const base = process.env.DATABASE_URL ?? "postgres://asyong:asyong@localhost:5432/ophir_test";
 const testUrl = new URL(base);
 testUrl.pathname = "/ophir_test";
 

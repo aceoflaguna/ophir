@@ -42,7 +42,7 @@ describe("estimateTrip", () => {
     expect(e.distanceKm).toBeGreaterThan(haversineKm(a.lat, a.lng, b.lat, b.lng));
     expect(e.durationMin).toBeGreaterThan(0);
     expect(e.fare).toBe(calcFare(e.distanceKm, e.durationMin, "economy"));
-    expect(e.currency).toBe("USD");
+    expect(e.currency).toBe("PHP");
   });
 });
 

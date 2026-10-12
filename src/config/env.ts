@@ -23,7 +23,7 @@ const schema = z.object({
   PER_KM: z.coerce.number().default(1.2),
   PER_MINUTE: z.coerce.number().default(0.35),
   MIN_FARE: z.coerce.number().default(5),
-  CURRENCY: z.string().length(3).default("USD"),
+  CURRENCY: z.string().length(3).default("PHP"),
   PLATFORM_FEE_PERCENT: z.coerce.number().min(0).max(100).default(20),
 
   DRIVER_STALE_SECONDS: z.coerce.number().int().positive().default(120),

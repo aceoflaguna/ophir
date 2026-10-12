@@ -6,7 +6,7 @@ import { spawnSync } from "node:child_process";
 import pg from "pg";
 
 export default async function globalSetup() {
-  const base = process.env.DATABASE_URL ?? "postgres://ophir:ophir@localhost:5432/ophir";
+  const base = process.env.DATABASE_URL ?? "postgres://asyong:asyong@localhost:5432/ophir_test";
   const test = new URL(base);
   test.pathname = "/ophir_test";
   const admin = new URL(base);
