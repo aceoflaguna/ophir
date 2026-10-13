@@ -49,6 +49,20 @@ ridesRouter.get("/:id/events", validate(idParam, "params"), ah(async (req, res) 
   res.json({ events: await rides.rideEvents(req.params.id!, req.auth!.userId, req.auth!.role) });
 }));
 
+import * as messages from "./messages.service.ts";   // next to the rides.service import
+
+// Rider <-> driver chat (polling). Only available while the ride is accepted / arrived / in_progress.
+const messagesQuery = z.object({ after: z.coerce.number().int().min(0).default(0), limit: z.coerce.number().int().min(1).max(100).default(50) });
+ridesRouter.get("/:id/messages", requireRole("rider", "driver"), validate(idParam, "params"), validate(messagesQuery, "query"), ah(async (req, res) => {
+  const q = req.query as unknown as z.infer<typeof messagesQuery>;
+  res.json({ messages: await messages.listMessages(req.params.id!, req.auth!.userId, q.after, q.limit) });
+}));
+ridesRouter.post("/:id/messages", requireRole("rider", "driver"), rateLimit({ name: "ride-message", windowSeconds: 10, max: 10, by: "user" }),
+  validate(idParam, "params"), validate(z.object({ body: z.string().trim().min(1).max(1000) })),
+  ah(async (req, res) => {
+    res.status(201).json({ message: await messages.sendMessage(req.params.id!, req.auth!.userId, req.body.body) });
+  }));
+
 ridesRouter.post("/:id/cancel", validate(idParam, "params"), validate(z.object({ reason: z.string().max(300).optional() })),
   ah(async (req, res) => {
     res.json({ ride: await rides.cancelRide(req.params.id!, req.auth!.userId, req.auth!.role, req.body.reason) });

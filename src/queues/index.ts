@@ -14,7 +14,8 @@ export type HousekeepingJobName =
   | "expire-stale-searches"
   | "release-stuck-rides"
   | "offline-stale-drivers"
-  | "purge-housekeeping-runs";
+  | "purge-housekeeping-runs"
+  | "purge-ride-messages";
 
 export const HOUSEKEEPING_JOBS: HousekeepingJobName[] = [
   "purge-refresh-tokens",
@@ -23,6 +24,7 @@ export const HOUSEKEEPING_JOBS: HousekeepingJobName[] = [
   "release-stuck-rides",
   "offline-stale-drivers",
   "purge-housekeeping-runs",
+  "purge-ride-messages", 
 ];
 
 const connection = createBullConnection();

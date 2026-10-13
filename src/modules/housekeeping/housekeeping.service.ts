@@ -6,6 +6,7 @@ import type { HousekeepingJobName } from "../../queues/index.ts";
 import { GEO_VEHICLE_TYPES, SEEN_KEY, geoKey } from "../drivers/drivers.service.ts";
 import { markNoDrivers } from "../rides/matching.service.ts";
 import { logEvent, releaseDriver } from "../rides/rides.service.ts";
+import { purgeOldMessages } from "../rides/messages.service.ts";   
 
 /** Each task returns the number of records it affected. */
 const tasks: Record<HousekeepingJobName, () => Promise<number>> = {
@@ -75,6 +76,10 @@ const tasks: Record<HousekeepingJobName, () => Promise<number>> = {
     const rows = await query("DELETE FROM housekeeping_runs WHERE started_at < now() - interval '30 days' RETURNING 1");
     return rows.length;
   },
+    /** Chat messages are kept for 7 days. */
+  async "purge-ride-messages"() {
+    return purgeOldMessages();
+  },
 };
 
 /** Schedules (cron or every-N-ms) registered with BullMQ job schedulers at worker start-up. */
@@ -85,6 +90,7 @@ export const SCHEDULES: Record<HousekeepingJobName, { every?: number; pattern?: 
   "release-stuck-rides": { pattern: "*/15 * * * *" },
   "offline-stale-drivers": { every: 30_000 },
   "purge-housekeeping-runs": { pattern: "30 3 * * *" },
+  "purge-ride-messages": { pattern: "10 * * * *" }, // hourly
 };
 
 export async function runHousekeeping(job: HousekeepingJobName): Promise<number> {
